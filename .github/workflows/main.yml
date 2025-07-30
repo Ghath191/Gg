@@ -1,0 +1,46 @@
+name: Build Kivy APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y zip unzip openjdk-17-jdk python3-pip wget
+
+    - name: Install Python packages
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install buildozer cython
+
+    - name: Download and Setup Android NDK 25b
+      run: |
+        wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip android-ndk-r25b-linux.zip -d $HOME
+      env:
+        ANDROIDNDK: ${{ env.HOME }}/android-ndk-r25b
+
+    - name: Accept Android SDK licenses
+      run: yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+    - name: Build APK with Buildozer
+      env:
+        ANDROIDNDK: ${{ env.HOME }}/android-ndk-r25b
+      run: |
+        buildozer android debug
