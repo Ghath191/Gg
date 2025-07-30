@@ -1,0 +1,33 @@
+<LoginScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 40
+        spacing: 20
+
+        Label:
+            text: "تسجيل الدخول"
+            font_size: 32
+            bold: True
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        TextInput:
+            id: email
+            hint_text: "البريد الإلكتروني"
+            multiline: False
+            size_hint_y: None
+            height: 40
+
+        TextInput:
+            id: password
+            hint_text: "كلمة المرور"
+            multiline: False
+            password: True
+            size_hint_y: None
+            height: 40
+
+        Button:
+            text: "دخول"
+            size_hint_y: None
+            height: 50
+            on_press: root.login(email.text, password.text)
