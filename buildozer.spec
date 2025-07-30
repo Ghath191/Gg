@@ -1,6 +1,6 @@
 [app]
-title = KivyLogin
-package.name = kivylogin
+title = LoginApp
+package.name = loginapp
 package.domain = org.kivy
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
@@ -9,18 +9,13 @@ requirements = python3,kivy,requests
 orientation = portrait
 fullscreen = 1
 
-[buildozer]
-log_level = 2
-warn_on_root = 1
-
 [android]
-android.api = 33
+android.api = 30
+android.build_tools_version = 30.0.3
 android.minapi = 21
-android.permissions = INTERNET
-android.accept_sdk_license = True
-android.build_tools_version = 33.0.2
-android.ndk = 23b
-android.sdk = 24.4.1
-android.ndk_path = 
-android.sdk_path = 
-android.extra_args = --accept-licenses
+android.ndk = 25b
+android.sdk = 30
+android.sdk_tools = 6858069
+android.release = False
+#android.permissions = INTERNET
+#android.arch = armeabi-v7a, arm64-v8a
