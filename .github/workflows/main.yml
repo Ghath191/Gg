@@ -33,15 +33,10 @@ jobs:
         rm cmdline-tools.zip
         mv cmdline-tools latest
 
-    - name: Set environment variables
-      run: |
-        echo "ANDROID_SDK_ROOT=$HOME/Android" >> $GITHUB_ENV
-        echo "PATH=$HOME/Android/cmdline-tools/latest/bin:$PATH" >> $GITHUB_PATH
-
     - name: Accept licenses and install SDK packages
       run: |
-        yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+        yes | $HOME/Android/cmdline-tools/latest/bin/sdkmanager --licenses
+        $HOME/Android/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
     - name: Download and setup NDK 25b
       run: |
@@ -49,7 +44,6 @@ jobs:
         unzip ndk.zip -d $HOME/Android/
         rm ndk.zip
         echo "ANDROID_NDK_ROOT=$HOME/Android/android-ndk-r25b" >> $GITHUB_ENV
-        echo "PATH=$HOME/Android/android-ndk-r25b:$PATH" >> $GITHUB_PATH
 
     - name: Build APK
       run: buildozer android debug
