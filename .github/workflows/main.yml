@@ -10,11 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      ANDROID_BUILD_TOOLS_VERSION: "30.0.3"
+
     steps:
+    - name: Clean Android SDK cache
+      run: rm -rf $HOME/.buildozer/android/platform
+
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -26,7 +32,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install buildozer cython
 
-    - name: Download and setup Android SDK cmdline tools
+    - name: Download Android SDK cmdline-tools
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
@@ -43,18 +49,17 @@ jobs:
       env:
         ANDROID_SDK_ROOT: ${{ env.HOME }}/android-sdk
 
-    - name: Set environment variables
-      run: |
-        echo "ANDROIDSDK=$HOME/android-sdk" >> $GITHUB_ENV
-        echo "ANDROIDNDK=$HOME/android-ndk-r25b" >> $GITHUB_ENV
-        echo "PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
-
     - name: Download and setup Android NDK 25b
       run: |
         wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
         unzip android-ndk-r25b-linux.zip -d $HOME
         rm android-ndk-r25b-linux.zip
 
-    - name: Build APK
+    - name: Set environment variables for buildozer
       run: |
-        buildozer android debug
+        echo "ANDROIDSDK=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROIDNDK=$HOME/android-ndk-r25b" >> $GITHUB_ENV
+        echo "PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
+
+    - name: Build APK
+      run: buildozer android debug
