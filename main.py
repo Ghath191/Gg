@@ -12,7 +12,7 @@ CHAT_ID = "1170274856"
 class LoginScreen(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.background = Image(source="bg.jpg", allow_stretch=True, keep_ratio=False, size_hint=(1,1), pos_hint={'x':0, 'y':0})
+        self.background = Image(source="IMG-20250728-WA0002.jpg", allow_stretch=True, keep_ratio=False, size_hint=(1,1), pos_hint={'x':0, 'y':0})
         self.add_widget(self.background)
 
         self.box = BoxLayout(orientation='vertical', size_hint=(0.8, 0.5), pos_hint={'center_x':0.5, 'center_y':0.5}, spacing=10)
