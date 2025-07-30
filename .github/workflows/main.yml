@@ -1,42 +1,45 @@
-name: Build Kivy APk
+name: Build Kivy APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10
+        python-version: '3.10'
 
-    - name: Install build dependencies
+    - name: Install buildozer dependencies
       run: |
         sudo apt update
-        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip python3-setuptools
-        pip install --upgrade pip
-        pip install buildozer cython virtualenv
+        sudo apt install -y zip unzip openjdk-17-jdk python3-pip
+        pip install --upgrade pip setuptools wheel
+        pip install buildozer cython
 
-    - name: Initialize buildozer
+    - name: Download and Set up Android NDK 25b
       run: |
-        buildozer init || true
+        wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip android-ndk-r25b-linux.zip -d $HOME
+        echo "ANDROIDNDK=$HOME/android-ndk-r25b" >> $GITHUB_ENV
 
-    - name: Accept licenses and build APK
-      run: |
-        mkdir -p ~/.android/ && touch ~/.android/repositories.cfg
-        yes | sdkmanager --licenses || true
-        buildozer android debug
+    - name: Accept Android SDK licenses
+      run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
+    - name: Build APK
+      run: buildozer android debug
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v3.1.2
       with:
-        name: kivy-app
+        name: loginapp-apk
         path: bin/*.apk
